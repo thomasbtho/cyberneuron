@@ -1,20 +1,21 @@
 package thomasbtho.cyberneuron.controller;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.*;
 import thomasbtho.cyberneuron.dto.LoginResponse;
 import thomasbtho.cyberneuron.dto.SignupResponse;
 import thomasbtho.cyberneuron.dto.LoginRequest;
 import thomasbtho.cyberneuron.dto.SignupRequest;
 import thomasbtho.cyberneuron.entity.User;
+import thomasbtho.cyberneuron.exception.UserAlreadyExistsException;
 import thomasbtho.cyberneuron.security.JwtUtil;
 import thomasbtho.cyberneuron.service.AuthService;
 
@@ -33,6 +34,8 @@ public class AuthController {
     @PostMapping("/signup")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "409", description = "User already exists", content = @Content(schema = @Schema(implementation = String.class))),
     })
     public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest signupRequest) {
         User newUser = authService.signup(signupRequest);
@@ -43,6 +46,8 @@ public class AuthController {
     @PostMapping("/login")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User logged in successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid email or password", content = @Content(schema = @Schema(implementation = String.class))),
     })
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         User authUser = authService.login(loginRequest);
@@ -52,5 +57,15 @@ public class AuthController {
         LoginResponse response = new LoginResponse(jwtToken, jwtService.getExpirationTime());
 
         return ResponseEntity.ok(response);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }
