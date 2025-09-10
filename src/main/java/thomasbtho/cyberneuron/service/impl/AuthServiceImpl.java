@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import thomasbtho.cyberneuron.dto.LoginRequest;
 import thomasbtho.cyberneuron.dto.SignupRequest;
 import thomasbtho.cyberneuron.entity.User;
+import thomasbtho.cyberneuron.exception.UserAlreadyExistsException;
 import thomasbtho.cyberneuron.repository.UserRepository;
 import thomasbtho.cyberneuron.service.AuthService;
 
@@ -26,6 +27,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User signup(SignupRequest signupRequest) {
+        if (userRepository.existsUserByEmail(signupRequest.getEmail())) {
+            throw new UserAlreadyExistsException("User already exists");
+        }
+
         User newUser = new User();
         newUser.setDisplayName(signupRequest.getDisplayName());
         newUser.setEmail(signupRequest.getEmail());
