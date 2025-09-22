@@ -1,5 +1,6 @@
 package thomasbtho.cyberneuron.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,16 +15,11 @@ import thomasbtho.cyberneuron.service.AuthService;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
-
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder bCryptPasswordEncoder, AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.authenticationManager = authenticationManager;
-    }
 
     @Override
     public User signup(SignupRequest signupRequest) {
