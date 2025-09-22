@@ -112,11 +112,11 @@ class AuthServiceImplTest {
         // Arrange
         SignupRequest signupRequest = new SignupRequest(testEmail, testPassword, testDisplayName);
 
-        when(userRepository.existsUserByEmail(testEmail)).thenReturn(true);
+        when(userRepository.existsByEmail(testEmail)).thenReturn(true);
 
         // Act & Assert
         assertThrows(UserAlreadyExistsException.class, () -> authService.signup(signupRequest));
-        verify(userRepository).existsUserByEmail(testEmail);
+        verify(userRepository).existsByEmail(testEmail);
         verifyNoMoreInteractions(userRepository);
         verifyNoInteractions(passwordEncoder);
     }
