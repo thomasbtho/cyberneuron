@@ -1,5 +1,6 @@
 package thomasbtho.cyberneuron.config;
 
+import lombok.RequiredArgsConstructor;
 import thomasbtho.cyberneuron.security.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,23 +23,17 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JwtRequestFilter jwtRequestFilter;
-
-    public SecurityConfiguration(
-            JwtRequestFilter jwtRequestFilter,
-            AuthenticationProvider authenticationProvider
-    ) {
-        this.authenticationProvider = authenticationProvider;
-        this.jwtRequestFilter = jwtRequestFilter;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/actuator/**", "/auth/**", "/api/**", "/api-docs/**", "/swagger-ui/**")
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/actuator/**", "/api", "/api-docs/**", "/swagger-ui/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
