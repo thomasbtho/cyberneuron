@@ -52,7 +52,7 @@ class AuthControllerIntegrationTest {
                 "testuser"
         );
 
-        mockMvc.perform(post("/auth/signup")
+        mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(signupRequest)))
                 .andExpect(status().isCreated())
@@ -67,7 +67,7 @@ class AuthControllerIntegrationTest {
                 "testuser"
         );
 
-        mockMvc.perform(post("/auth/signup")
+        mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(signupRequest)))
                 .andExpect(status().isBadRequest())
@@ -83,14 +83,14 @@ class AuthControllerIntegrationTest {
                 "loginuser"
         );
 
-        mockMvc.perform(post("/auth/signup")
+        mockMvc.perform(post("/api/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signupRequest)));
 
         // Then, try to log in
         LoginRequest loginRequest = new LoginRequest("login@example.com", "Password123!");
 
-        mockMvc.perform(post("/auth/login")
+        mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
@@ -102,7 +102,7 @@ class AuthControllerIntegrationTest {
     void login_WithInvalidCredentials_ShouldReturnUnauthorized() throws Exception {
         LoginRequest loginRequest = new LoginRequest("nonexistent@example.com", "wrongpassword");
 
-        mockMvc.perform(post("/auth/login")
+        mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized());
@@ -117,14 +117,14 @@ class AuthControllerIntegrationTest {
                 "loginuser2"
         );
 
-        mockMvc.perform(post("/auth/signup")
+        mockMvc.perform(post("/api/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signupRequest)));
 
         // Then, try to log in with wrong password
         LoginRequest loginRequest = new LoginRequest("login2@example.com", "wrongpassword");
 
-        mockMvc.perform(post("/auth/login")
+        mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized());

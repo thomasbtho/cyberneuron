@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,16 +21,12 @@ import thomasbtho.cyberneuron.security.JwtUtil;
 import thomasbtho.cyberneuron.service.AuthService;
 
 @RestController
-@RequestMapping("/auth")
+@RequiredArgsConstructor
+@RequestMapping("/api/auth")
 @Tag(name = "Authentication")
 public class AuthController {
     private final JwtUtil jwtService;
     private final AuthService authService;
-
-    public AuthController(JwtUtil jwtService, AuthService authService) {
-        this.jwtService = jwtService;
-        this.authService = authService;
-    }
 
     @PostMapping("/signup")
     @ApiResponses(value = {
