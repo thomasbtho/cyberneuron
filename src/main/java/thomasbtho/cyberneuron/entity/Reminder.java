@@ -22,5 +22,7 @@ public class Reminder {
 
     private String title;
     private Date deadline;
+
+    @Enumerated(EnumType.STRING)
     private ReminderStatus status;
 }
