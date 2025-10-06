@@ -8,10 +8,10 @@ services:
     volumes:
       - .:/app
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/cyberneuron
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - JWT_SECRET=95743286f85f320fc55e341e8c14cb326120523522aa9aa0da05d1d578eeb1e5 #this is a dummy value
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-cyberneuron}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - JWT_SECRET=${JWT_SECRET:-95743286f85f320fc55e341e8c14cb326120523522aa9aa0da05d1d578eeb1e5} #this is a dummy value
     depends_on:
       - postgres
 
@@ -21,8 +21,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=cyberneuron
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-cyberneuron}
     volumes:
       - pgdata:/var/lib/postgresql/data
 
